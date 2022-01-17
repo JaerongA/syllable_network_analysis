@@ -10,7 +10,9 @@ import seaborn as sns
 from util import save
 
 def nb_song_note_in_bout(song_notes, bout):
-    # returns the number of song notes within a bout
+    """
+    Return the number of song notes within a bout
+    """
     nb_song_note_in_bout = len([note for note in song_notes if note in bout])
     return nb_song_note_in_bout
 
@@ -152,6 +154,7 @@ def get_trans_entropy(trans_matrix):
 
 
 def get_sequence_linearity(note_seq, syl_network):
+    """calculate sequence linearity"""
     nb_unique_transitions = len(syl_network)
     # print(nb_unique_transitions)
     nb_unique_syllables = len(note_seq) - 1  # stop syllable (*) not counted here
@@ -161,6 +164,7 @@ def get_sequence_linearity(note_seq, syl_network):
 
 
 def get_sequence_consistency(note_seq, trans_matrix):
+    """calculate sequence consistency"""
     typical_transition = []
     for i, row in enumerate(trans_matrix):
         max_ind = np.where(row == np.amax(row))
@@ -177,16 +181,15 @@ def get_sequence_consistency(note_seq, trans_matrix):
 
 
 def get_song_stereotypy(sequence_linearity, sequence_consistency):
+    """calculate song stereotypy"""
     song_stereotypy = (sequence_linearity + sequence_consistency) / 2
     return song_stereotypy
 
 
-def main(query, update_db=False, save_fig=None, view_folder=True, fig_ext='.png'):
-    """Main function"""
+def main():
 
     # Parameters
     nb_row = 10  # for plotting
-    cmap = "gist_heat_r"  # for heatmap
     font_size = 12
 
     # Load database
@@ -346,6 +349,7 @@ def main(query, update_db=False, save_fig=None, view_folder=True, fig_ext='.png'
 if __name__ == '__main__':
 
     # Parameters
+    cmap = "gist_heat_r"  # for heatmap
     update_db = False
     save_fig = False
     view_folder = True  # open up the figure folder after saving
@@ -354,9 +358,4 @@ if __name__ == '__main__':
     # SQL statement
     query = "SELECT * FROM song"
 
-    main(query,
-         update_db=update_db,
-         save_fig=save_fig,
-         view_folder=view_folder,
-         fig_ext=fig_ext
-         )
+    main()
