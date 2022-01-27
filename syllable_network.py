@@ -1,5 +1,5 @@
 """
-Syllable network analysis
+Syllable network analysis and calculates transition entropy
 """
 
 from analysis.song import SongInfo
@@ -9,15 +9,16 @@ import numpy as np
 import seaborn as sns
 from util import save
 
-def nb_song_note_in_bout(song_notes, bout):
+
+def nb_song_note_in_bout(song_notes: str , bout: str) -> int:
     """
-    Return the number of song notes within a bout
+    Returns the number of song notes within a bout
     """
     nb_song_note_in_bout = len([note for note in song_notes if note in bout])
     return nb_song_note_in_bout
 
 
-def get_syl_color(bird_id: str):
+def get_syl_color(bird_id: str) -> dict:
     """Map colors to each syllable"""
     from analysis.parameters import sequence_color
     import copy
@@ -50,10 +51,10 @@ def get_syl_color(bird_id: str):
     return note_seq, syl_color
 
 
-def get_trans_matrix(syllables, note_seq, normalize=False):
+def get_trans_matrix(syllables: str, note_seq: str, normalize=False) -> np.ndarray:
     """Build a syllable transition matrix"""
 
-    trans_matrix = np.zeros((len(note_seq), len(note_seq)))  # initialize the matrix
+    trans_matrix = np.zeros((len(note_seq), len(note_seq)), dtype='int16')  # initialize the matrix
     # print(syllables)
     for i, note in enumerate(syllables):
         if i < len(syllables) - 1:
@@ -73,6 +74,7 @@ def plot_transition_diag(ax, note_seq, syl_network, syl_color,
                          syl_circ_size=450, line_width=0.5):
     """Plot syllable transition diagram"""
     import math
+    np.random.seed(0)
 
     # Set node location
     theta = np.linspace(-math.pi, math.pi, num=len(note_seq) + 1)  # for each node
@@ -103,7 +105,8 @@ def plot_transition_diag(ax, note_seq, syl_network, syl_color,
             ax.scatter(start_nodex, start_nodey, s=0, facecolors='k')
             ax.scatter(end_nodex, end_nodey, s=0, facecolors='k')
 
-            ax.plot([start_nodex, end_nodex], [start_nodey, end_nodey], 'k', color=list(syl_color.values())[start_node],
+            ax.plot([start_nodex, end_nodex], [start_nodey, end_nodey], 'k',
+                    color=list(syl_color.values())[start_node],
                     linewidth=line_width)
         else:  # repeating syllables
             factor = 1.25  # adjust center of the circle for the repeat
@@ -122,12 +125,23 @@ def plot_transition_diag(ax, note_seq, syl_network, syl_color,
         factor = 1.7
         text_loc = ((np.array(node_xpos) * factor).tolist(), (np.array(node_ypos) * factor).tolist())
 
-        for i, note in enumerate(note_seq):
-            ax.text(text_loc[0][i], text_loc[1][i], note_seq[i], fontsize=15)
+        for ind, note in enumerate(note_seq):
+            ax.text(text_loc[0][ind], text_loc[1][ind], note_seq[ind], fontsize=15)
 
 
-def get_syllable_network(trans_matrix):
-    """Build the syllable network (start & end nodes and weights)"""
+def get_syllable_network(trans_matrix: np.ndarray) -> list:
+    """
+    Build sparse representation of a syllable network
+
+    Parameters
+    ----------
+    trans_matrix : np.ndarray
+        transition matrix
+    Returns
+    -------
+    syl_network : list of tuple (start node, end node, weight)
+    """
+
     start_node = np.transpose(np.nonzero(trans_matrix))[:, 0].T.tolist()
     end_node = np.transpose(np.nonzero(trans_matrix))[:, 1].T.tolist()
     weight = []
@@ -138,9 +152,10 @@ def get_syllable_network(trans_matrix):
     return syl_network
 
 
-def get_trans_entropy(trans_matrix):
+def get_trans_entropy(trans_matrix: np.ndarray) -> float:
     """
     Calculate transition entropy
+    entropy will be equal to zero if all notes transition to only one syllable
     """
     trans_entropy = []
     for row in trans_matrix:
@@ -153,8 +168,8 @@ def get_trans_entropy(trans_matrix):
     return trans_entropy
 
 
-def get_sequence_linearity(note_seq, syl_network):
-    """calculate sequence linearity"""
+def get_sequence_linearity(note_seq: str, syl_network: list) -> float:
+
     nb_unique_transitions = len(syl_network)
     # print(nb_unique_transitions)
     nb_unique_syllables = len(note_seq) - 1  # stop syllable (*) not counted here
@@ -163,8 +178,8 @@ def get_sequence_linearity(note_seq, syl_network):
     return sequence_linearity
 
 
-def get_sequence_consistency(note_seq, trans_matrix):
-    """calculate sequence consistency"""
+def get_sequence_consistency(note_seq: str, trans_matrix: np.ndarray) -> float:
+
     typical_transition = []
     for i, row in enumerate(trans_matrix):
         max_ind = np.where(row == np.amax(row))
@@ -180,13 +195,13 @@ def get_sequence_consistency(note_seq, trans_matrix):
     return sequence_consistency
 
 
-def get_song_stereotypy(sequence_linearity, sequence_consistency):
-    """calculate song stereotypy"""
+def get_song_stereotypy(sequence_linearity: float, sequence_consistency: float) -> float:
     song_stereotypy = (sequence_linearity + sequence_consistency) / 2
     return song_stereotypy
 
 
 def main():
+    """Main function"""
 
     # Parameters
     nb_row = 10  # for plotting
@@ -198,7 +213,7 @@ def main():
 
     # Make database
     if update_db:
-        with open('../../database/create_song_sequence.sql', 'r') as sql_file:
+        with open('../database/create_song_sequence.sql', 'r') as sql_file:
             db.conn.executescript(sql_file.read())
 
     # Loop through db
@@ -234,6 +249,13 @@ def main():
                 nb_bouts[context] = len(song_bouts[context].split('*')[:-1])
 
         for i, context in enumerate(song_bouts.keys()):
+
+            # remove a note from note sequence if it doesn't appear in a session
+            intersection_ = set(note_seq).intersection(set(song_bouts[context]))
+            for note in note_seq:
+                if note not in intersection_:
+                    note_seq = note_seq.replace(note, '')
+
             # Get transition matrix
             trans_matrix = []
             trans_matrix = get_trans_matrix(song_bouts[context], note_seq)
@@ -243,7 +265,7 @@ def main():
                 fig = plt.figure(figsize=(len(song_bouts.keys()) * 4, 10), dpi=350)
                 plt.suptitle(si.name, y=.98, fontsize=font_size)
 
-            ax = plt.subplot2grid((nb_row, len(song_bouts.keys())), (1, i), rowspan=3, colspan=1)
+            ax = plt.subplot2grid((nb_row, len(song_bouts.keys())), (0, i), rowspan=3, colspan=1)
             y_max = trans_matrix.max() + (10 - trans_matrix.max() % 10)
             ax = sns.heatmap(trans_matrix, cmap=cmap, annot=True, vmin=0, vmax=y_max,
                              linewidth=0.2, linecolor='k',
@@ -261,7 +283,7 @@ def main():
             cbar = ax.collections[0].colorbar
 
             # Calculate transition entropy
-            # Entropy = 0 when there's a single transition and increases with more branching points
+            # entropy = 0 when there's a single transition and increases with more branching points
             trans_entropy[context] = get_trans_entropy(trans_matrix)
 
             # Build the syllable network (start & end nodes and weights)
@@ -274,6 +296,7 @@ def main():
             song_stereotypy[context] = get_song_stereotypy(sequence_linearity[context],
                                                            sequence_consistency[context])
 
+            # Plot transition diagram
             ax = plt.subplot2grid((nb_row, len(set(song_bouts.keys()))), (4, i), rowspan=3, colspan=1)
             plot_transition_diag(ax, note_seq, syl_network, syl_color)
             ax_txt = plt.subplot2grid((nb_row, len(set(song_bouts.keys()))), (9, i), rowspan=1, colspan=1)
@@ -305,7 +328,7 @@ def main():
 
         # Save results
         if save_fig:
-            save_path = save.make_dir(ProjectLoader().path / 'Analysis', 'SequenceAnalysis', add_date=False)
+            save_path = save.make_dir(ProjectLoader().path / 'Analysis', save_folder_name, add_date=True)
             save.save_fig(fig, save_path, si.name, fig_ext=fig_ext, view_folder=view_folder)
         else:
             plt.show()
@@ -338,8 +361,6 @@ def main():
                     f"""UPDATE song_sequence SET {column}={round(song_stereotypy[context], 3)} WHERE songID= {song_db.id}""")
             db.conn.commit()
 
-        del fig
-
     # Convert db to csv
     if update_db:
         db.to_csv('song_sequence')
@@ -347,15 +368,15 @@ def main():
 
 
 if __name__ == '__main__':
-
     # Parameters
-    cmap = "gist_heat_r"  # for heatmap
     update_db = False
     save_fig = False
     view_folder = True  # open up the figure folder after saving
     fig_ext = '.png'
+    save_folder_name = 'SequenceAnalysis'
+    cmap = "gist_heat_r"  # heatmap color scheme
 
     # SQL statement
-    query = "SELECT * FROM song"
+    query = "SELECT * FROM song WHERE id=104"
 
     main()
