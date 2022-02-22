@@ -1,5 +1,5 @@
 # syllable network analysis 
 
-Analyze birdsong syllable sequence
+Analyze syllable sequence variability over time
 
 ![plot](./data/output.png)
