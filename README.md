@@ -32,7 +32,8 @@ syllable_network_analysis/
 ├── configs/                       # Configuration files
 ├── scripts/                       # Analysis scripts
 ```
-```
+
+````
 
 ## 🚀 Quick Start
 
@@ -43,7 +44,7 @@ syllable_network_analysis/
 ```bash
 git clone https://github.com/yourusername/syllable_network_analysis.git
 cd syllable_network_analysis
-```
+````
 
 2. Install the package:
 
