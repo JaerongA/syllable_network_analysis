@@ -135,8 +135,8 @@ data/interim/
 *.npy
 
 # Output files
-reports/
-*.png
+# reports/  # Allow reports directory for README images
+# *.png     # Allow PNG files for README images
 *.pdf
 *.svg
 
