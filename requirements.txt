@@ -1,0 +1,23 @@
+# Core dependencies
+numpy>=1.21.0
+pandas>=1.3.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+scipy>=1.7.0
+
+# Jupyter and development
+jupyter>=1.0.0
+ipython>=7.0.0
+
+# Audio processing (if needed)
+librosa>=0.9.0
+soundfile>=0.10.0
+
+# Testing
+pytest>=6.0.0
+pytest-cov>=2.12.0
+
+# Code quality
+black>=21.0.0
+flake8>=3.9.0
+isort>=5.9.0
