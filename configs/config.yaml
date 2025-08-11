@@ -1,0 +1,33 @@
+# Configuration file for syllable network analysis
+
+# Data paths
+data:
+  raw: "data/raw"
+  processed: "data/processed"
+  interim: "data/interim"
+  output: "reports"
+
+# Analysis parameters
+analysis:
+  normalize_transitions: false
+  random_seed: 0
+  
+# Visualization parameters
+visualization:
+  figure_size: [10, 10]
+  dpi: 300
+  save_format: "png"
+  
+# Syllable definitions
+syllables:
+  song_notes: ["a", "b", "c", "d"]
+  calls: ["m"]
+  intro_notes: ["i"]
+  stop_symbol: "*"
+  
+# Colors for different syllable types
+colors:
+  motif: ["red", "blue", "lime", "magenta", "darkorange", "purple", "saddlebrown"]
+  intro: ["black", "gray", "darkseagreen", "olive"]
+  call: ["teal", "darkslategray", "darkgray", "indigo"]
+  stop: ["yellow"]
