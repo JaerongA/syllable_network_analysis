@@ -20,7 +20,7 @@ syllable_network_analysis/
 ├── src/                           # Source code
 │   └── syllable_network_analysis/
 │       ├── analysis/              # Core analysis functions
-│       ├── visualization/         # Plotting and visualization
+│       ├── plot/                  # Plotting and visualization
 │       └── utils/                 # Utility functions
 ├── notebooks/                     # Jupyter notebooks
 ├── tests/                         # Test suite
@@ -31,7 +31,7 @@ syllable_network_analysis/
 ├── reports/                       # Generated reports and plots
 ├── configs/                       # Configuration files
 ├── scripts/                       # Analysis scripts
-└── docs/                          # Documentation
+```
 ```
 
 ## 🚀 Quick Start
@@ -78,7 +78,7 @@ print(f"Transition entropy: {entropy:.4f}")
 ### Visualization
 
 ```python
-from syllable_network_analysis.visualization import plot_transition_diag
+from syllable_network_analysis.plot import plot_transition_diag
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
@@ -88,7 +88,7 @@ plt.show()
 
 ## 📊 Example Output
 
-![Syllable Network Visualization](./reports/output.png)
+![Syllable Network Visualization](reports/output.png)
 
 ## 🔬 Analysis Methods
 

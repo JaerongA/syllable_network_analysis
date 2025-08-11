@@ -1,5 +1,5 @@
 """
-Tests for the visualization module.
+Tests for the plot module.
 """
 
 import matplotlib.pyplot as plt
@@ -9,8 +9,8 @@ import pytest
 from syllable_network_analysis.plot import plot_transition_diag
 
 
-class TestVisualization:
-    """Test class for visualization functions."""
+class TestPlot:
+    """Test class for plot functions."""
 
     def test_plot_transition_diag(self):
         """Test transition diagram plotting."""

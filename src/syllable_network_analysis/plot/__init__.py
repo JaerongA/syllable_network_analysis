@@ -1,5 +1,5 @@
 """
-Visualization module for syllable network analysis.
+Plotting module for syllable network analysis.
 """
 
 from .plots import plot_transition_diag

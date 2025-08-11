@@ -12,8 +12,8 @@ analysis:
   normalize_transitions: false
   random_seed: 0
   
-# Visualization parameters
-visualization:
+# Plot parameters
+plot:
   figure_size: [10, 10]
   dpi: 300
   save_format: "png"
