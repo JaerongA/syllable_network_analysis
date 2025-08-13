@@ -5,37 +5,15 @@
 
 A comprehensive Python package for analyzing syllable sequence variability over time in bird songs. This project provides tools for building transition matrices, calculating entropy metrics, and visualizing syllable networks.
 
-## 🎯 Features
+## Features
 
-- **Transition Matrix Analysis**: Build and analyze syllable transition matrices
-- **Network Visualization**: Create beautiful syllable transition diagrams
-- **Entropy Metrics**: Calculate transition entropy and sequence complexity
-- **Sequence Analysis**: Measure linearity, consistency, and stereotypy
-- **Modular Architecture**: Clean, maintainable code structure
+- Transition Matrix Analysis: Build and analyze syllable transition matrices
+- Network Visualization: Create syllable transition diagrams
+- Entropy Metrics: Calculate transition entropy and sequence complexity
+- Sequence Analysis: Measure linearity, consistency, and stereotypy
+- Modular Architecture: Clean, maintainable code structure
 
-## 📁 Project Structure
-
-```
-syllable_network_analysis/
-├── src/                           # Source code
-│   └── syllable_network_analysis/
-│       ├── analysis/              # Core analysis functions
-│       ├── plot/                  # Plotting and visualization
-│       └── utils/                 # Utility functions
-├── notebooks/                     # Jupyter notebooks
-├── tests/                         # Test suite
-├── data/                          # Data files
-│   ├── raw/                       # Raw data files
-│   ├── processed/                 # Processed data
-│   └── interim/                   # Intermediate data
-├── reports/                       # Generated reports and plots
-├── configs/                       # Configuration files
-├── scripts/                       # Analysis scripts
-```
-
-````
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -44,7 +22,7 @@ syllable_network_analysis/
 ```bash
 git clone https://github.com/yourusername/syllable_network_analysis.git
 cd syllable_network_analysis
-````
+```
 
 2. Install the package:
 
@@ -87,11 +65,11 @@ plot_transition_diag(ax, note_seq, syl_network, syl_color)
 plt.show()
 ```
 
-## 📊 Example Output
+## Example Output
 
 ![Syllable Network Visualization](reports/output.png)
 
-## 🔬 Analysis Methods
+## Analysis Methods
 
 ### Transition Entropy
 
@@ -109,6 +87,6 @@ Proportion of transitions that follow the most common pattern.
 
 Combined measure of linearity and consistency, indicating overall song stereotypy.
 
-## 📞 Contact
+## Contact
 
 - **Email**: jaerongahn@gmail.com
